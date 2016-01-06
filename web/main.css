@@ -1,0 +1,17 @@
+body {
+    padding-top: 50px;
+}
+.starter-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.post {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+textarea {
+    margin-top: 10px;
+    width: 100%;
+}
