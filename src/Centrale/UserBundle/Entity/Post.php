@@ -3,6 +3,7 @@
 namespace Centrale\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Post
@@ -23,6 +24,8 @@ class Post
 
     /**
      * @var string
+     * @Assert\NotBlank
+     * @Assert\Length(min="10")
      *
      * @ORM\Column(name="message", type="string", length=1000, nullable=true)
      */

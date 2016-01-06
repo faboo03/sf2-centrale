@@ -49,17 +49,20 @@ class DefaultController extends Controller
                         ->setMethod('POST')
                     ->getForm();
 
-        //Soumet le form
+        //Soumetre  le form
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
             // récupère l'objet du formulaire
             $post = $form->getData();
-            // entity manager
+
+            // Entity manager
             $em = $this->getDoctrine()->getManager();
-            // met en BDD
+
+            // Met en BDD
             $em->persist($post);
             $em->flush();
+
             return $this->redirect($this->generateUrl("centrale_user_bundle_wall", array(
                     'firstname' => $firstname,
                     "lastname" => $lastname)
