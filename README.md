@@ -1,68 +1,76 @@
-Symfony Standard Edition
-========================
+# sf2-centrale
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony2
-application that you can use as the skeleton for your new applications.
+## Install
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+### MySQL
 
-What's inside?
---------------
+    sudo apt-get install mysql-server
+    mysql -u root -p
+    > CREATE DATABASE symfony;
 
-The Symfony Standard Edition is configured with the following defaults:
 
-  * An AppBundle you can use to start coding;
+### PHP5
 
-  * Twig as the only configured template engine;
+    sudo apt-get install php5 php5-cli php5-mysql php5-fpm
 
-  * Doctrine ORM/DBAL;
+### nginx
 
-  * Swiftmailer;
+    sudo apt-get install nginx
 
-  * Annotations enabled for everything.
+conf nginx
 
-It comes pre-configured with the following bundles:
+    sudo nano /etc/nginx/sites-available/sf2-centrale
 
-  * **FrameworkBundle** - The core Symfony framework bundle
+Sample content :
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
+    server {
+    	listen 80;
+    	root PATH_TO_PROJECT/web/;
 
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
+    	server_name symfony.centrale;
 
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
+    	index index.html index.htm index.nginx-debian.html index.php;
 
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
+      access_log /var/log/nginx/default-access_log;
+    	error_log /var/log/nginx/default-error_log;
 
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
+    	location / {
+    		try_files $uri @rewriteapp;
+    	}
+    	location @rewriteapp{
+    		rewrite ^(.*)$ /app_dev.php/$1 last;
+    	}
+    	location ~ ^/(app|app_dev|config)\.php(/|$) {
+    		fastcgi_pass php5-fpm-sock;
+    		fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    		include fastcgi_params;
+    		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    		fastcgi_param HTTPS off;
+    	}
+    }
 
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
+Enable site :
 
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
+    ln -s /etc/nginx/sites-available/sf2-centrale /etc/nginx/sites-enabled
 
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
+Add host entry in /etc/hosts
 
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
+    127.0.0.1 symfony.centrale
 
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
+Restart
 
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
+    sudo service nginx restart
+    sudo service php5-fpm restart
 
-Enjoy!
 
-[1]:  https://symfony.com/doc/2.8/book/installation.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/2.8/book/doctrine.html
-[8]:  https://symfony.com/doc/2.8/book/templating.html
-[9]:  https://symfony.com/doc/2.8/book/security.html
-[10]: https://symfony.com/doc/2.8/cookbook/email.html
-[11]: https://symfony.com/doc/2.8/cookbook/logging/monolog.html
-[13]: https://symfony.com/doc/2.8/bundles/SensioGeneratorBundle/index.html
+### Composer
+
+    curl -sS https://getcomposer.org/installer | php
+
+### Dependencies
+
+    php composer.phar install
+
+### Create username
+
+    http://symfony.centrale/register
