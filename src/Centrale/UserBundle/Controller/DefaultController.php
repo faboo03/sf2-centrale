@@ -3,6 +3,7 @@
 namespace Centrale\UserBundle\Controller;
 
 use Centrale\UserBundle\Entity\Post;
+use Centrale\UserBundle\Form\PostType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\Debug;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -39,26 +40,30 @@ class DefaultController extends Controller
         $newPost->setCreatedAt(new \DateTime());
         $newPost->setAuthor($firstname.' '.$lastname);
 
-        $form = $this->createFormBuilder($newPost)
-                ->setAction($this->generateUrl("centrale_user_bundle_wall", array(
-                            'firstname' => $firstname,
-                            "lastname" => $lastname)
-                ))
-                ->setMethod('POST')
-                ->add('created_at', 'datetime', array("label" => "Créé le", "widget" => 'single_text'))
-                ->add('message', 'textarea')
-                ->add('author')
-                ->add('save', 'submit')
-                ->getForm();
+        $formFactory = $this->container->get('form.factory');
+        $form = $formFactory->createBuilder(new PostType(), $newPost)
+                    ->setAction($this->generateUrl("centrale_user_bundle_wall", array(
+                                    'firstname' => $firstname,
+                                    "lastname" => $lastname)
+                        ))
+                        ->setMethod('POST')
+                    ->getForm();
 
-        if($request->getMethod() == "POST") {
-            $form->handleRequest($request);
-            if($form->isValid()){
-                $post = $form->getData();
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($post);
-                $em->flush();
-            }
+        //Soumet le form
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            // récupère l'objet du formulaire
+            $post = $form->getData();
+            // entity manager
+            $em = $this->getDoctrine()->getManager();
+            // met en BDD
+            $em->persist($post);
+            $em->flush();
+            return $this->redirect($this->generateUrl("centrale_user_bundle_wall", array(
+                    'firstname' => $firstname,
+                    "lastname" => $lastname)
+            ));
         }
 
         return array(
