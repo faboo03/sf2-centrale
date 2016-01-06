@@ -14,10 +14,9 @@
              {%  endfor %}
          </div>
          <div class="row">
-             <form class="col-md-12" action="/" method="POST">
-                <textarea></textarea>
-                 <input type="submit">
-             </form>
+             {{ form_start(form, {'attr' : {"class" : 'col-md-12'}}) }}
+             {{ form_widget(form) }}
+             {{ form_end(form) }}
          </div>
     </div>
  {% endblock %}
