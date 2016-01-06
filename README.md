@@ -13,6 +13,10 @@
 
     sudo apt-get install php5 php5-cli php5-mysql php5-fpm
 
+Add in /etc/php5/fpm/php.ini
+
+    date.timezone = Europe/Paris
+
 ### nginx
 
     sudo apt-get install nginx
@@ -71,6 +75,6 @@ Restart
 
     php composer.phar install
 
-### Create username
+### Create user
 
     http://symfony.centrale/register
